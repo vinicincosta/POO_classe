@@ -15,55 +15,74 @@ class Pessoa:
         self.salario = salario
 
     def apresentar(self):
-        print(f'Olá sou {self.nome},\n' 
+        print(f'Olá sou {self.nome},\n'
               f'minha data de nascimento é {self.data_nascimento},\n'
               f'meu código é {self.codigo},\n'
               f'no momento eu estou:')
 
-
         if self.estudando:
-            print(f'Estudando')
+            self.salario = 0
+            print(f'Apenas estudando {self.salario}')
+
 
         else:
-            print(f'Não está estudando,')
+            print(f'Não está estudando')
+
+        if self.trabalhando and self.estudando:
+            print(f'Você está trabalhando e estudando, seu salário irá aumentar se continuar dessa maneira')
+
+        else:
+            print(f'Voce não está fazendo nada {self.salario}')
 
 
         if self.trabalhando:
-            print(f' Trabalhando')
+            self.salario = 500
+            print(f'Está trabalhando, mas não aumentou seu salário')
+
         else:
             print(f'e não trabalhando')
-        print('-'*20)
+        print('-' * 20)
+
 
     def estudar(self):
+        if self.trabalhando and self.estudando:
 
-        if self.estudando:
+            self.salario += 500
+            print(f'Você está trabalhando e estudando, Seu salário irá aumentar, atualmente será = {self.salario} reais')
+
+
+        elif self.estudando:
             print("self.salario = 0")
             print(f'Apenas estudando')
 
-        elif self.trabalhando and self.estudando:
-            print("self.salario += 1000")
-            print(f'Você está trabalhando e estudando, Seu salário irá aumentar')
-
         else:
-            self.estudando = True
             print(f'Começou estudar')
 
     def trabalhar(self):
 
         if self.trabalhando:
-            self.salario += 500
-            print('Está trabalhando, mas não aumentou seu salário')
+            self.salario = 500
+            print(f'Está trabalhando, mas não aumentou seu salário será {self.salario}')
 
         else:
             self.trabalhando = True
             print('Começou trabalhar')
 
 
+
+
 p1 = Pessoa('Vini', "26/03/2008", "1788768326", )
 p1.apresentar()
 p1.trabalhar()
 p1.estudar()
+p1.estudar()
+p1.trabalhar()
 p1.apresentar()
+
+
+
+
+
 
 # p2 = Pessoa('Dener', "05/10/2000", "9876543", )
 # p2.apresentar()
@@ -104,3 +123,5 @@ p1.apresentar()
 # #
 # # c5 = Curso('Geografia', "Chata", 'onlines')
 # c5.apresentar_2()
+
+#
