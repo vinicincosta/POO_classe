@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import sqlalchemy
-from models import *
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "SECRET"
@@ -8,141 +7,97 @@ app.config['SECRET_KEY'] = "SECRET"
 
 class Pessoa:
     def __init__(self, nome, data_nascimento, codigo, estudando=True, trabalhando=False, salario=0):
-        self.nome = nome
-        self.data_nascimento = data_nascimento
-        self.codigo = codigo
+        self.__nome = nome
+        self.__data_nascimento = data_nascimento
+        self.__codigo = codigo
 
-        self.estudando = estudando
-        self.trabalhando = trabalhando
-        self.salario = salario
+        self._estudando = estudando
+        self._trabalhando = trabalhando
+        self._salario = salario
 
-    def apresentar(self):
-        print(
-            f' Olá, sou {self.nome}.\n',
-            f'Data de nascimento: {self.data_nascimento}.\n',
-            f'Código: {self.codigo}.\n',
-            f'Situação atual:')
+    def apresentar_ex(self):
+        print("+", "-" * 20, "+")
+        print(f'Olá, sou {self.get_nome()},\n'
+              f'meu aniversário é dia {self.get_data_nascimento()},\n'
+              f'n de rg {self.get_codigo()}.\n')
+        print("+", "-" * 20, "+")
         print("\n")
-        print('-' * 20)
 
-        if self.estudando and self.trabalhando:
-            print(f'Estudando e trabalhando. Salário atual: {self.salario} reais.')
-        elif self.estudando:
-            print(f'Apenas estudando. Salário atual: {self.salario} reais.')
-        elif self.trabalhando:
-            print(f'Apenas trabalhando. Salário atual: {self.salario} reais.')
+    # GET voce recebe informação, SET é para mandar informação
+
+    def get_nome(self):
+        return self.__nome
+
+    def get_data_nascimento(self):
+        return self.__data_nascimento
+
+    def get_codigo(self):
+        return self.__codigo
+
+    def get_estudando(self):
+        return self._estudando
+
+    def get_trabalhando(self):
+        return self._trabalhando
+
+    def get_salario(self):
+        return self._salario
+
+    def set_salario(self, valor):
+        if valor >= 0:
+            self._salario = valor
         else:
-            print(f'Nem estudando nem trabalhando. Salário atual: {self.salario} reais.')
-
-        print("\n")
-        print('-' * 20)
-
-    def estudar(self):
-        if not self.estudando:
-            self.estudando = True
-            print('Continua apenas estudando.')
-
-        elif self.estudando and self.trabalhando:
-            self.salario += 500
-            print(f'Agora está estudando e trabalhando. Salário aumentado para {self.salario} reais.')
-
-    def trabalhar(self):
-        if not self.trabalhando:
-            self.trabalhando = True
-            self.salario = 500
-            print(f'Agora está trabalhando. Salário inicial: {self.salario} reais.')
-        else:
-            print(f'Já estava trabalhando. Salário atual: {self.salario} reais.')
-
-        # Testando a classe
+            print('salário inválido')
 
 
-class Bebe(Pessoa):
-    def __init__(self, nome, data_nascimento, codigo,
-                 estudando=True, trabalhando=True):
-        super().__init__(nome, data_nascimento,
-                         codigo, estudando, trabalhando)
-        self.fome = True
-        self.chorando = True
-        self.dormindo = False
-        self.estudando = estudando
-        self.trabalhando = trabalhando
-        print("\n")
-        print('-' * 20)
+    # Exemplos:
+    def is_estudando(self):
+        return self._estudando
 
-    def apresentar(self):
-        print(f'Olá, sou irmão do bebe {self.nome},\n'
-              f'meu irmão nasceu {self.data_nascimento},\n'
-              f'e seu registro é:{self.codigo}.\n'
-              f'situação atual:')
+    def is_trabalhando(self):
+        return self._trabalhando
 
-        if self.fome and self.chorando:
-            self.fome = True
-            self.chorando = True
-            print(f'o bebe está querendo mamar, ele está'
-                  f' chorando e com fome')
+    def set_trabalhar(self, status):
+        if self._trabalhando and status:
+            print('Já esta trabalhando')
+        elif not self._trabalhando and not status:
+            print('Não esta trabalhando')
 
-        if not self.fome and self.dormindo:
-            print(f'bebe está satisfeito e dormindo')
+        elif not self._trabalhando and status:
+            self._trabalhando = status
+            self.set_salario(100)
 
         else:
-            print('Ele está acordado')
-        print("\n")
-        print('-' * 20)
+            self._trabalhando = status
+            self.set_salario(0)
 
-    def acordar(self):
-        if self.dormindo:
-            self.dormindo = False
-            self.fome = True
-            print(f'Bebe acordou, pois estava com fome:')
-        else:
-            print(f'bebe já está acordado')
-
-    def mamar(self):
-        if self.fome:
-            self.chorando = False
-            self.fome = False
-            print(f'Bebê parou de chorar e não está mais com fome, pois já está satisfeito')
-
-        else:
-            print(f'bebe já mamou, ele já não tem mais fome')
-
-    def chorar(self):
-        if self.chorando:
-            self.chorando = True
-            self.fome = True
-            print(f'Bebê está chorando, ele está com fome')
-
-        else:
-
-            print(f'Bebê não está chorando, pois não está com fome')
-
-    def dormir(self):
-        if self.dormindo:
-            print(f'ele já está dormindo')
-
-        else:
-            if self.fome:
-                print(f'Bebê está com fome, não pode dormir')
-            else:
-                self.dormindo = True
-                print(f'Bebe pode dormir')
-
-    def trabalhar(self):
-        if self.trabalhando:
-            self.trabalhando = True
-            print(f'O bebe não pode trabalhar, só daqui 18 anos')
-
-    def estudar(self):
-        if self.estudando:
-            self.estudando = True
-            print(f'O bebe não está na creche ainda')
+    def set_estudar(self, status):
+        if self._estudando and status:
+            print(f'está estudando')
+        elif not self._estudando and not status:
+            print(f'Não está estudando')
+        elif self._estudando and self._trabalhando and status:
+            self.set_salario(self.get_salario() + 500)
+            print(f'Você está trabalhando e estudando, seu salário será R$ {self._salario}')
 
 
-s1 = Bebe('Dener', "26/03/2008", "1788768326")
-s1.apresentar()
+    # EX: p1.pessoa.set_trabalhar(True)
 
-p1 = Pessoa('Vini', "26/03/2008", "1788768326")
-p1.apresentar()
-p1.estudar()
-p1.trabalhar()
+p1 = Pessoa(f'Vini', '26/03/2008','76545678','Sim', 'Não')
+p1.apresentar_ex()
+p1.set_estudar(True)
+p1.set_trabalhar(False)
+
+
+
+# def apresentar_ex(self):
+#     print("+", "-" * 20, "+")
+#     print(f'Olá, sou {self.get_nome()},\n'
+#           f'meu aniversário é dia {self.get_data_nascimento()},\n'
+#           f'n de rg {self.get_codigo()}.\n')
+#     print(f'Estudando: {'Sim' if self.is_estudando() else'Não'}')
+#     print(f'Trabalhando: {'Sim' if self.is_trabalhando() else 'Não'}')
+#     if self.is_trabalhando():
+#         print(f'Salário:R$ {self.get_salario():.2f}')
+#     print("+", "-" * 20, "+")
+#     print("\n")
